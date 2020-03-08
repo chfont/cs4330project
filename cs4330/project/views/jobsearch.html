@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        Job Search
+        <br />
+        <a href="home">Return to Profile</a>
+        <br />
+        {% for job in jobs %}
+        <div id="post">Position: {{job.1}} <br/> Location: {{job.2}} <br /> {{job.4}} {{job.5}}</div>
+        <br />
+        {% endfor%}
+    </body>
+</html>

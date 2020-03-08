@@ -6,7 +6,11 @@
     <link res="stylesheet"  href="{% static 'CSS/login.css'%}"/>
   </head>
   <body>
-    <p>Login<p>
+    <h2>Login</h2>
+    <form method="POST" class="post-form">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Submit</button>
+    </form>
 
     <a href="register">Sign Up</a>
   </body>
