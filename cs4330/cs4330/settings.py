@@ -38,7 +38,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'project.apps.ProjectConfig',
+    'project'
 ]
+
+MEDIA_URL = '/files/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+
+
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,11 +92,11 @@ WSGI_APPLICATION = 'cs4330.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cs4330',
-		'USER': '',
-		'PASSWORD':'',
+        'NAME': 'anonadmin',
+		'USER': 'anonadmin',
+		'PASSWORD':'REEEEEEE',
 		'HOST': 'localhost',
-        'PORT': ''
+        'PORT': '5432'
     }
 }
 
