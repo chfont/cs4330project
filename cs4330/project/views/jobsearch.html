@@ -5,9 +5,27 @@
         <br />
         <a href="home">Return to Profile</a>
         <br />
-        {% for job in jobs %}
-        <div id="post">Position: {{job.1}} <br/> Location: {{job.2}} <br /> {{job.4}} {{job.5}}</div>
-        <br />
-        {% endfor%}
+        <div id="jobs" style="overflow-y: scroll; width: 20%;float:left">
+            {% for job in jobs %}
+            <div id="post" style="margin: 2%">
+                Position: {{job.1}}
+                <br/>
+                Location: {{job.2}}
+                <br />
+                Company: {{job.4}}  Pay Rate: {{job.5}}
+                <br />
+                Apply Date: {{job.7}}
+                <br />
+                Description: {{job.9}}
+            </div>
+            <br />
+            {% endfor %}
+        </div>
+        <div style="padding-left:30%;width:40%">
+            <form method="POST" class="post-form" style="padding-left:2%">{% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="save btn btn-default">Submit</button>
+            </form>
+        </div>
     </body>
 </html>

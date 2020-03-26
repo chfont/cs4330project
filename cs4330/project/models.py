@@ -39,6 +39,20 @@ class Users(models.Model):
     class Meta:
         db_table = 'users'
 
+class Applications(models.Model):
+    application_id = models.CharField(primary_key=True, max_length=32)
+    job = models.ForeignKey('Jobpost', models.DO_NOTHING)
+    user = models.ForeignKey('Users', models.DO_NOTHING)
+    first_name = models.CharField(max_length=32)
+    last_name = models.CharField(max_length=32)
+    email = models.CharField(max_length=64)
+    gender = models.CharField(max_length=1)
+    resume_string = models.CharField(max_length=4000)
+    phone_number = models.CharField(max_length=15)
+
+    class Meta:
+        managed = False
+        db_table = 'applications'
 
 class Jobpost(models.Model):
     job_id = models.CharField(primary_key=True, max_length=64)
@@ -47,7 +61,11 @@ class Jobpost(models.Model):
     company = models.ForeignKey(Companies, models.DO_NOTHING)
     company_name = models.CharField(max_length=64)
     pay = models.DecimalField(max_digits=10, decimal_places=3, blank=True, null=True)
+    post_date = models.DateField()
+    due_date = models.DateField()
+    recruiter = models.ForeignKey('Recruiters', models.DO_NOTHING)
+    description = models.CharField(max_length=2500)
 
     class Meta:
+        managed = False
         db_table = 'jobpost'
-
