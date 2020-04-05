@@ -1,10 +1,4 @@
-body
-{
-    	background-color: #595959;
-	text-align:center;
-	color: rffffff;
+body {
+    text-align:center;
 }
 
-p {
-    color:green;
-};

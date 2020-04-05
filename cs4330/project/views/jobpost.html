@@ -1,13 +1,18 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'CSS/jobpost.css'%}"/>
+    </head>
     <body>
-    <p style = "text-align: center">Job Post</p>
-        <form method="POST" class="post-form" style="margin-left:30%; width:40%; text-align: center">{% csrf_token %}
+    <p>Job Post</p>
+        <form method="POST" class="post-form">{% csrf_token %}
             {% for field in form %}
-            <div style="text-align:left">
+            <div>
                 {{field.label_tag }}
             </div>
-             <div style="text-align:left">{{field}}</div>
+             <div>{{field}}</div>
 
             {% endfor %}
             <br />

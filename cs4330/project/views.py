@@ -32,7 +32,7 @@ def register(request):
                 error.append("Email already in use")
             if(form.cleaned_data['password'] != form.cleaned_data['confirm_password']):
                 error.append("Passwords do not match")
-            if(form.cleaned_data['employee_id'] is not None):
+            if(form.cleaned_data['employee_id'] is not None and form.cleaned_data['employee_id'] is not ''):
                 c.execute("SELECT * from employees where employee_id = %s",(form.cleaned_data['employee_id'],))
                 res = c.fetchone()
                 if(res is None):
@@ -45,8 +45,8 @@ def register(request):
                 uid = getUniqueId("users", "id", c,32)
                 userDict['id'] = uid
                 c.execute("INSERT INTO login(id, email, password) values (%s, %s, %s)", (uid, form.cleaned_data['email'], form.cleaned_data['password']))
-                if(form.cleaned_data['employee_id'] is None):
-                    c.execute("INSERT INTO users(id, email,fname, lname, phone_number, gender, age) values (%s, %s, %s ,%s, %s, %s, %s, %s)",
+                if(form.cleaned_data['employee_id'] is None or form.cleaned_data['employee_id'] is ''):
+                    c.execute("INSERT INTO users(id, email,fname, lname, phone_number, gender, age) values (%s, %s, %s ,%s, %s, %s, %s)",
                           (uid, form.cleaned_data['email'], form.cleaned_data['fname'], form.cleaned_data['lname'], form.cleaned_data['phone_number'], form.cleaned_data['gender'],
                            form.cleaned_data['age']))
                     db.commit()
@@ -166,5 +166,5 @@ def messages(request):
         if names is None:
             names = [(n[0], n[1], result[1], result[2])]
         else:
-            names += (n[0], n[1], result[1], result[2])
+            names += [(n[0], n[1], result[1], result[2])]
     return render(request, 'message.html', {'messages': res, 'names':names,'form': form, 'errors':err, 'length': len(res)})

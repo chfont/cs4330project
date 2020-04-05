@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
+{% load static %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/jobsearch.css'%}"/>
+</head>
     <body>
         Job Search
         <br />
         <a href="home">Return to Profile</a>
         <br />
-        <div id="jobs" style="overflow-y: scroll; width: 20%;float:left">
+        <div id="jobs">
             {% for job in jobs %}
-            <div id="post" style="margin: 2%">
+            <div id="post">
                 Position: {{job.1}}
                 <br/>
                 Location: {{job.2}}
@@ -21,7 +26,7 @@
             <br />
             {% endfor %}
         </div>
-        <div style="padding-left:30%;width:40%">
+        <div id="formdiv">
             <form method="POST" class="post-form" style="padding-left:2%">{% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit" class="save btn btn-default">Submit</button>

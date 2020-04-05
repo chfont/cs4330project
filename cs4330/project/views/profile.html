@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
+{% load static %}
+    <head>
+        <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'CSS/profile.css'%}"/>
+    </head>
     <body>
         <p>{{user.2}} {{user.3}}'s Profile</p>
-        <a href="jobpost">Post a job (Recruiters only)</a>
-        <a href="jobsearch">Search for job (Recruiters only)</a>
+        <div>
+            <a href="jobpost">Post a job (Recruiters only)</a>
+        </div>
+        <br />
+        <div><a href="jobsearch">Search for job</a></div><br />
         {% if employee is not None %}
-        <a href="messages">View Messages</a>
+        <div><a href="messages">View Messages</a></div>
         {% endif %}
     </body>
 </html>

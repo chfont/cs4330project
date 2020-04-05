@@ -1,0 +1,18 @@
+#jobs {
+    overflow-y: scroll;
+    width: 20%;
+    float:left;
+}
+
+#post {
+    margin: 2%;
+}
+
+#formdiv {
+    padding-left:30%;
+    width:40%;
+}
+
+form {
+    padding-left:2%;
+}

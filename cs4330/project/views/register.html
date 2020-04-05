@@ -1,5 +1,10 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
+  <head>
+      <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
+      <link rel="stylesheet" type="text/css" href="{% static 'CSS/register.css'%}"/>
+  </head>
   <body>
     <h2>Register</h2>
     <form method="POST" class="post-form">{% csrf_token %}

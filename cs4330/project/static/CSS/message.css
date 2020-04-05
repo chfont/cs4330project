@@ -1,0 +1,10 @@
+#messages {
+    overflow-y: scroll;
+    width: 20%;
+    float:left;
+}
+
+#newmessage {
+    margin-left: 28%;
+
+}
