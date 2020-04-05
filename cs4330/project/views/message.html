@@ -1,10 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
 <body>
+<div id ="messages">
+    {% for n in names %}
+
+    <div id = "message">
+        {{n.0}}  {{n.1}} {{ n.2|date:"D d M Y" }} {{n.3}}
+    </div>
+    {% endfor %}
+</div>
+<div id="newmessage">
+<form method="POST">
+    {%csrf_token%}
+    {{form.as_p}}
+    <button>Send Message</button>
+</form>
+</div>
+
+{% if errors is not None %}
+{% include 'error.html' %}
+{% endif %}
 
 </body>
 </html>

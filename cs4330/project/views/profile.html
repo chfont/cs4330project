@@ -4,5 +4,8 @@
         <p>{{user.2}} {{user.3}}'s Profile</p>
         <a href="jobpost">Post a job (Recruiters only)</a>
         <a href="jobsearch">Search for job (Recruiters only)</a>
+        {% if employee is not None %}
+        <a href="messages">View Messages</a>
+        {% endif %}
     </body>
 </html>

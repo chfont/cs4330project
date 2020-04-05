@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from .forms import *
 import MySQLdb as sql
-from datetime import date
+from datetime import date, datetime
 from .uniqueId import *
-db = sql.connect(user="", passwd="",db="") #SET DB CONNECTION BEFORE USE
+db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
 c = db.cursor()
 
 userDict = {}
@@ -65,6 +65,8 @@ def profile(request):
         return redirect(login)   
     c.execute("SELECT * FROM users WHERE id = %s", (userDict['id'],))
     user = c.fetchone()
+    userDict['firstname'] = user[2]
+    userDict['lastname'] = user[3]
     #User[7] is employee_id
     if(user[7] is not None):
         userDict['employeeID'] = user[7]
@@ -72,7 +74,10 @@ def profile(request):
         employee = c.fetchone()
         if(employee[2] is not None):
             userDict['recruiterID'] = employee[2]
-    return render(request, 'profile.html', {'user':user})
+    employeeID = None
+    if 'employeeID' in userDict:
+        employeeID = userDict['employeeID']
+    return render(request, 'profile.html', {'user':user, 'employee': employeeID})
 def jobsearch(request):
     if 'id' not in userDict:
         redirect(login)
@@ -115,7 +120,7 @@ def jobpost(request):
             new_id = getUniqueId('jobpost', 'job_id', c, 64)
             c.execute("SELECT * FROM companies WHERE company_name = %s", (form.cleaned_data['company_name'],))
             res = c.fetchone()
-            if res is None or len(res) == 0: #Company name is invalid
+            if res is None or len(res) == 0:  # Company name is invalid
                 return redirect(jobpost)
             c.execute("INSERT INTO jobpost(job_id, job_name, location, company_id, company_name, pay, post_date, due_date, recruiter_id, description) VALUES(%s, %s,%s,%s,%s,%s, %s, %s, %s, %s)",
                     (new_id, form.cleaned_data['job_name'], form.cleaned_data['location'],
@@ -125,3 +130,41 @@ def jobpost(request):
         
     form = JobPostForm()
     return render(request, 'jobpost.html', {'form':form})
+
+def messages(request):
+    if 'id' not in userDict:
+        return redirect(login)
+    err = None
+    if(request.method == 'POST'):
+        form = NewMessageForm(request.POST)
+        if form.is_valid():
+            c.execute("SELECT * FROM users WHERE  fname = %s and lname = %s", (form.cleaned_data['first_name'], form.cleaned_data['last_name']))
+            res = c.fetchall()
+            if res is None or len(res) == 0:  # Company name is invalid
+                err = ["Person not found, please try again"]
+            else:
+                new_id = getUniqueId('messages', 'message_id', c, 32)
+                c.execute("INSERT INTO messages(message_id, sender_id, receiver_id, message, time) VALUES(%s, %s, %s, %s, %s)", (new_id, userDict['id'], res[0][0], form.cleaned_data['message'],  datetime.now()))
+                db.commit()
+    form = NewMessageForm()
+
+    #get all conversations, and the other individual's name
+    c.execute("SELECT receiver_id, time, message FROM messages WHERE sender_id = %s", (userDict['id'],))
+    receivers = c.fetchall()
+    c.execute("SELECT sender_id, time, message FROM messages WHERE receiver_id = %s", (userDict['id'],))
+    senders = c.fetchall()
+    rec_ids = [x[0] for x in receivers]
+    receivers = [x for x in receivers]
+    senders = [x for x in senders if x[0] not in rec_ids]
+    res = receivers + senders
+    names = None
+    for result in res:
+        c.execute("select fName, lName from users where id = %s", (result[0],))
+        n = c.fetchone()
+        print(n[0])
+        print(result[1])
+        if names is None:
+            names = [(n[0], n[1], result[1], result[2])]
+        else:
+            names += (n[0], n[1], result[1], result[2])
+    return render(request, 'message.html', {'messages': res, 'names':names,'form': form, 'errors':err, 'length': len(res)})

@@ -39,7 +39,7 @@ class SearchForm(forms.Form):
     position = forms.CharField(label="Position", max_length=64, required=False)
     description = forms.CharField(label="Description contains", max_length=1000, required=False)
 
-class ApplyForm(forms.Form):
+class NewMessageForm(forms.Form):
     first_name = forms.CharField(label="First Name", max_length=64)
-    last_name = forms.CharField(label="Email Name", max_length=64)
-    email = forms.CharField(label="")
+    last_name = forms.CharField(label="Last Name", max_length=64)
+    message = forms.CharField(label="Message", max_length=1000)
