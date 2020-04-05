@@ -3,11 +3,15 @@ from .forms import *
 import MySQLdb as sql
 from datetime import date, datetime
 from .uniqueId import *
+
+
 db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
 c = db.cursor()
 
-userDict = {}
+userDict = {}   # dictionary to store current user info for quick usage
 
+
+# Function to handle login requests
 def login(request):
     if (request.method == 'POST'):
         form = LoginForm(request.POST)
@@ -15,12 +19,13 @@ def login(request):
             c.execute("SELECT * FROM login WHERE login.email = %s and login.password = %s", (form.cleaned_data['email'], form.cleaned_data['password']))
             user = c.fetchall()
             if len(user):
-                # this is good
+                # If this fails, the user was not found
                 userDict['id'] = user[0][2]
                 return redirect(profile)
     form = LoginForm()
     return render(request, 'login.html', {'form' : form})
 
+# Function to handle registration requests
 def register(request):
     error = []
     if (request.method == 'POST'):
@@ -60,13 +65,17 @@ def register(request):
     form = RegisterForm()
     return render(request, 'register.html', {'form' : form})
 
+# Function to handle profile page requests
 def profile(request):
     if 'id' not in userDict:
         return redirect(login)   
     c.execute("SELECT * FROM users WHERE id = %s", (userDict['id'],))
     user = c.fetchone()
+
+    # Store user name info
     userDict['firstname'] = user[2]
     userDict['lastname'] = user[3]
+
     #User[7] is employee_id
     if(user[7] is not None):
         userDict['employeeID'] = user[7]
@@ -78,6 +87,8 @@ def profile(request):
     if 'employeeID' in userDict:
         employeeID = userDict['employeeID']
     return render(request, 'profile.html', {'user':user, 'employee': employeeID})
+
+# Function to handle job search page requests
 def jobsearch(request):
     if 'id' not in userDict:
         redirect(login)
@@ -87,6 +98,8 @@ def jobsearch(request):
         if form.is_valid():
             string = "select * from jobpost"
             str = []
+
+            # if chain to modify query for filtering
             if form.cleaned_data['location'] != '':
                 str.append(f"location like '%{form.cleaned_data['location']}%'")
             if form.cleaned_data['position'] != '':
@@ -109,6 +122,8 @@ def jobsearch(request):
         res = c.fetchall()
     form = SearchForm()
     return render(request, 'jobsearch.html', {'jobs':res, 'form':form})
+
+# Function to handle job posting page requests
 def jobpost(request):
     if 'id' not in userDict:
         return redirect(login)
@@ -131,6 +146,7 @@ def jobpost(request):
     form = JobPostForm()
     return render(request, 'jobpost.html', {'form':form})
 
+# Function to handle message page requests
 def messages(request):
     if 'id' not in userDict:
         return redirect(login)
@@ -148,7 +164,7 @@ def messages(request):
                 db.commit()
     form = NewMessageForm()
 
-    #get all conversations, and the other individual's name
+    # get all conversations, and the other individual's name
     c.execute("SELECT receiver_id, time, message FROM messages WHERE sender_id = %s", (userDict['id'],))
     receivers = c.fetchall()
     c.execute("SELECT sender_id, time, message FROM messages WHERE receiver_id = %s", (userDict['id'],))
@@ -158,6 +174,8 @@ def messages(request):
     senders = [x for x in senders if x[0] not in rec_ids]
     res = receivers + senders
     names = None
+
+    # Map user names to user ids
     for result in res:
         c.execute("select fName, lName from users where id = %s", (result[0],))
         n = c.fetchone()
