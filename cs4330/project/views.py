@@ -5,10 +5,12 @@ from datetime import date, datetime
 from .uniqueId import *
 from django.views.generic import TemplateView
 from .upload import *
-
+from .dbQuery import *
 
 db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
 cursor = db.cursor()
+
+db_obj = DBObject(db, cursor)
 
 userDict = {}   # dictionary to store current user info for quick usage
 
@@ -19,8 +21,7 @@ def login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            cursor.execute("SELECT * FROM login WHERE login.email = %s and login.password = %s", (form.cleaned_data['email'], form.cleaned_data['password']))
-            user = cursor.fetchall()
+            user = checkLogin(db_obj, form.cleaned_data['email'], form.cleaned_data['password'])
             if len(user):
                 # If this fails, the user was not found
                 userDict['id'] = user[0][2]
@@ -35,15 +36,13 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            cursor.execute("SELECT * FROM login WHERE login.email = %s", (form.cleaned_data['email'],))
-            user = cursor.fetchall()
+            user = findExistingUser(db_obj, form.cleaned_data['email'])
             if len(user):
                 error.append("Email already in use")
             if form.cleaned_data['password'] != form.cleaned_data['confirm_password']:
                 error.append("Passwords do not match")
             if form.cleaned_data['employee_id'] is not None and form.cleaned_data['employee_id'] != '':
-                cursor.execute("SELECT * from employees where employee_id = %s", (form.cleaned_data['employee_id'],))
-                res = cursor.fetchone()
+                res = findValidEmployee(db_obj,form.cleaned_data['employee_id'])
                 if res is None:
                     error.append("Invalid employee id")
             if len(error):
@@ -53,18 +52,14 @@ def register(request):
             else:
                 uid = getUniqueId("users", "id", cursor, 32)
                 userDict['id'] = uid
-                cursor.execute("INSERT INTO login(id, email, password) values (%s, %s, %s)", (uid, form.cleaned_data['email'], form.cleaned_data['password']))
                 if form.cleaned_data['employee_id'] is None or form.cleaned_data['employee_id'] is '':
-                    cursor.execute("INSERT INTO users(id, email,fname, lname, phone_number, gender, age) values (%s, %s, %s ,%s, %s, %s, %s)",
-                                   (uid, form.cleaned_data['email'], form.cleaned_data['fname'], form.cleaned_data['lname'], form.cleaned_data['phone_number'], form.cleaned_data['gender'],
-                           form.cleaned_data['age']))
-                    db.commit()
+                    addNonEmployeeUser(db_obj, (uid, form.cleaned_data['email'], form.cleaned_data['password']),
+                    (uid, form.cleaned_data['email'], form.cleaned_data['fname'], form.cleaned_data['lname'], form.cleaned_data['phone_number'], form.cleaned_data['gender'],
+                                        form.cleaned_data['age']))
                 else:
-                    cursor.execute("SELECT * from employees where employee_id = %s", (form.cleaned_data['employee_id'],))
-                    cursor.execute("INSERT INTO users(id, email,fname, lname, phone_number, gender, age, employee_id) values (%s, %s, %s ,%s, %s, %s, %s, %s)",
-                                   (uid, form.cleaned_data['email'], form.cleaned_data['fname'], form.cleaned_data['lname'], form.cleaned_data['phone_number'], form.cleaned_data['gender'],
-                               form.cleaned_data['age'], form.cleaned_data['employee_id']))
-                    db.commit()
+                    addEmployeeUser(db_obj, (uid, form.cleaned_data['email'], form.cleaned_data['password']),
+                                    (uid, form.cleaned_data['email'], form.cleaned_data['fname'], form.cleaned_data['lname'], form.cleaned_data['phone_number'], form.cleaned_data['gender'],
+                                     form.cleaned_data['age'], form.cleaned_data['employee_id']))
                 return redirect(profile)
     form = RegisterForm()
     return render(request, 'register.html', {'form': form})
@@ -76,8 +71,7 @@ def profile(request):
         return redirect(login)   
     if request.method == 'POST':
         upload(request.FILES['resume'])
-    cursor.execute("SELECT * FROM users WHERE id = %s", (userDict['id'],))
-    user = cursor.fetchone()
+    user = getUserById(db_obj, userDict['id'])
 
     # Store user name info
     userDict['firstname'] = user[2]
@@ -86,16 +80,14 @@ def profile(request):
     # User[7] is employee_id
     if user[7] is not None:
         userDict['employeeID'] = user[7]
-        cursor.execute("SELECT * FROM employees WHERE employee_id = %s", (user[7],))
-        employee = cursor.fetchone()
+        employee = getEmployeeInfo(db_obj, user[7])
         if employee[2] is not None:
             userDict['recruiterID'] = employee[2]
     employeeID = None
     if 'employeeID' in userDict:
         employeeID = userDict['employeeID']
 
-    cursor.execute("SELECT status, job_name, company_name FROM applications, jobpost where applications.user_id = %s and applications.job_id = jobpost.job_id", (userDict['id'],))
-    apps = cursor.fetchall()
+    apps = getJobApplicationsOfUser(db_obj, userDict['id'])
     return render(request, 'profile.html', {'user': user, 'employee': employeeID, 'apps': apps})
 
 
@@ -150,16 +142,15 @@ def jobpost(request):
         form = JobPostForm(request.POST)
         if form.is_valid():
             new_id = getUniqueId('jobpost', 'job_id', cursor, 64)
-            cursor.execute("SELECT * FROM companies WHERE company_name = %s", (form.cleaned_data['company_name'],))
-            res = cursor.fetchone()
+            res = getCompany(db_obj, form.cleaned_data['company_name'])
             if res is None or len(res) == 0:  # Company name is invalid
+                #TODO: Error Message here
                 return redirect(jobpost)
             cursor.execute("INSERT INTO jobpost(job_id, job_name, location, company_id, company_name, pay, post_date, due_date, recruiter_id, description, long_description, requirements) VALUES(%s, %s,%s,%s,%s,%s, %s, %s, %s, %s, %s, %s)",
                            (new_id, form.cleaned_data['job_name'], form.cleaned_data['location'],
                         res[0],form.cleaned_data['company_name'],form.cleaned_data['pay'], date.today(), form.cleaned_data['due_date'], userDict['recruiterID'],    form.cleaned_data['description'], form.cleaned_data['long_description'], form.cleaned_data['requirements']))
             db.commit()
 
-        
     form = JobPostForm()
     return render(request, 'jobpost.html', {'form':form})
 
@@ -199,6 +190,7 @@ def messages(request):
         n = cursor.fetchone()
         print(n[0])
         print(result[1])
+
         if names is None:
             names = [(n[0], n[1], result[1], result[2])]
         else:
@@ -213,28 +205,21 @@ def apply(request):
     err = None
     success = False
     if request.method == 'POST':
-        form=SearchApplyForm(request.POST)
+        form = SearchApplyForm(request.POST)
         if form.is_valid():
-            cursor.execute("select * from applications where job_id = %s and user_id = %s", (form.cleaned_data['job_id'], userDict['id']))
-            results = cursor.fetchall()
-            if len(results) is not 0:
+            if not isUniqueApplication(db_obj, userDict['id'], form.cleaned_data['job_id']):
                 err = ["Already applied to this job"]
-                print(results)
             else:
-                cursor.execute("select count(*) from applications where user_id = %s", (userDict['id'],))
-                results = cursor.fetchone()
-                if results[0] == 20:
+                if getApplicationCountByUser(db_obj, userDict['id']) == 20:
                     err = ["Maximum application count reached (20)."]
                 else:
-                    app_id = getUniqueId("applications","application_id", cursor, 32)
-                    cursor.execute("insert into applications(application_id, job_id, user_id) values(%s, %s, %s)", (app_id, form.cleaned_data['job_id'], userDict['id']))
-                    db.commit()
+                    app_id = getUniqueId("applications", "application_id", cursor, 32)
+                    addApplicationToTable(db_obj, app_id, form.cleaned_data['job_id'], userDict['id'])
                     success = True
         else:
             err = ["Unexpected Error occurred, please try again"]
     job_id = userDict['job_id']
-    cursor.execute("select * from jobpost where job_id = %s", (job_id,))
-    post = cursor.fetchone()
+    post = getJobPost(db_obj, job_id)
 
     # This should never happen, but a fail-safe is necessary
     if post is None:

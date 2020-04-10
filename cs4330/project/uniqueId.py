@@ -13,5 +13,4 @@ def getUniqueId(table_name, key, cursor, length):
         s = f"SELECT * FROM {table_name} where {key} = '{new_id}'"
         cursor.execute(s)
         res = cursor.fetchone()
-    print(len(new_id))
     return new_id
