@@ -12,3 +12,7 @@ a {
 #logout {
     width: 6%;
 }
+
+div {
+    float: right;
+}

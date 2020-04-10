@@ -41,7 +41,7 @@ def register(request):
                 error.append("Email already in use")
             if form.cleaned_data['password'] != form.cleaned_data['confirm_password']:
                 error.append("Passwords do not match")
-            if form.cleaned_data['employee_id'] is not None and form.cleaned_data['employee_id'] is not '':
+            if form.cleaned_data['employee_id'] is not None and form.cleaned_data['employee_id'] != '':
                 cursor.execute("SELECT * from employees where employee_id = %s", (form.cleaned_data['employee_id'],))
                 res = cursor.fetchone()
                 if res is None:
@@ -93,7 +93,10 @@ def profile(request):
     employeeID = None
     if 'employeeID' in userDict:
         employeeID = userDict['employeeID']
-    return render(request, 'profile.html', {'user':user, 'employee': employeeID})
+
+    cursor.execute("SELECT status, job_name, company_name FROM applications, jobpost where applications.user_id = %s and applications.job_id = jobpost.job_id", (userDict['id'],))
+    apps = cursor.fetchall()
+    return render(request, 'profile.html', {'user': user, 'employee': employeeID, 'apps': apps})
 
 
 # Function to handle job search page requests

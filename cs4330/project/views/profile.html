@@ -7,6 +7,12 @@
     </head>
     <body>
         <p>{{user.2}} {{user.3}}'s Profile</p>
+        <div>
+            <h3>Applications</h3>
+            {% for app in apps %}
+            {{app.1}} {{app.2}} {{app.0}}
+            {% endfor %}
+        </div>
         <a href="jobpost">Post a job (Recruiters only)</a>
         <br />
         <a href="jobsearch">Search for job</a><br />
