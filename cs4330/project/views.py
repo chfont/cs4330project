@@ -3,6 +3,8 @@ from .forms import *
 import MySQLdb as sql
 from datetime import date, datetime
 from .uniqueId import *
+from django.views.generic import TemplateView
+from .upload import *
 
 
 db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
@@ -72,8 +74,10 @@ def register(request):
 def profile(request):
     if 'id' not in userDict:
         return redirect(login)   
-    cursor.execute("SELECT * FROM users WHERE id = %s", (userDict['id'],))
-    user = cursor.fetchone()
+    if request.method == 'POST':
+        upload(request.FILES['resume'])
+    c.execute("SELECT * FROM users WHERE id = %s", (userDict['id'],))
+    user = c.fetchone()
 
     # Store user name info
     userDict['firstname'] = user[2]
@@ -239,3 +243,4 @@ def apply(request):
         long_desc = post[10]
     form = SearchApplyForm()
     return render(request, 'apply.html', {'post':post, 'long_desc': long_desc, 'requirements': requirements, 'form':form, 'succeed':success, 'errors':err})
+

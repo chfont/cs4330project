@@ -15,5 +15,11 @@
         {% endif %}
         <br />
         <a href="login" id="logout">Logout</a>
+        <h2>Upload resume</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="resume">
+            <button type="submit">Upload file</button>
+        </form>
     </body>
 </html>
