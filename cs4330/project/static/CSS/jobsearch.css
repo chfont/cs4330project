@@ -5,7 +5,8 @@
 }
 
 #post {
-    margin: 2%;
+    padding: 2%;
+    background-color: #586784;
 }
 
 #formdiv {
@@ -15,4 +16,8 @@
 
 form {
     padding-left:2%;
+}
+
+#id_div {
+    display: none;
 }

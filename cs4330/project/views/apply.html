@@ -1,12 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
-    <title>Apply to {% p.position %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/apply.css'%}"/>
+    <script src="{% static 'JS/jobsearch_apply.js'%}"></script>
+    <title>Apply</title>
 </head>
-<body>
-    <div>
+<body onload="success_message('{{succeed}}')">
 
+    <div id="success">Application Received</div>
+    <div id="post">
+        Position: {{post.1}} <br />
+        Location: {{post.2}} <br />
+        Company: {{post.4}}  <br />
+        Pay Rate: {{post.5}} <br />
+        Application Due Date: {{post.7}} <br />
+        Short Description: {{post.9}} <br />
+        Long Description: {{long_desc}} <br />
+        Requirements :  <br />
+        <ul>
+            {% for requirement in requirements %}
+            <li>{{requirement}}</li>
+            {% endfor %}
+        </ul>
+
+    </div>
+
+    <form method="POST" id="applyform">
+        {% csrf_token %}
+        {{form.as_p}}
+    </form>
+
+    <button type="submit" onclick="goto_or_apply('{{post.0}}')">Apply Now</button>
+
+    <div id="errors">
+        <br />
+        {% if errors is not None %}
+            {% include 'error.html' %}
+        {% endif %}
     </div>
 </body>
 </html>
