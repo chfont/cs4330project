@@ -15,5 +15,13 @@
         {% if employee is not None %}
         <div><a href="messages">View Messages</a></div>
         {% endif %}
+        
+        
+        <h2>Upload resume</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="resume">
+            <button type="submit">Upload file</button>
+        </form>
     </body>
 </html>

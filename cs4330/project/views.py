@@ -3,6 +3,8 @@ from .forms import *
 import MySQLdb as sql
 from datetime import date, datetime
 from .uniqueId import *
+from django.views.generic import TemplateView
+from .upload import *
 
 
 db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
@@ -68,9 +70,16 @@ def register(request):
 # Function to handle profile page requests
 def profile(request):
     if 'id' not in userDict:
-        return redirect(login)   
+        return redirect(login) 
+    
+    if request.method == 'POST':
+        upload(request.FILES['resume'])
+
+      
     c.execute("SELECT * FROM users WHERE id = %s", (userDict['id'],))
     user = c.fetchone()
+
+
 
     # Store user name info
     userDict['firstname'] = user[2]
@@ -186,3 +195,5 @@ def messages(request):
         else:
             names += [(n[0], n[1], result[1], result[2])]
     return render(request, 'message.html', {'messages': res, 'names':names,'form': form, 'errors':err, 'length': len(res)})
+
+
