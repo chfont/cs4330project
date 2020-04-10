@@ -1,11 +1,14 @@
 
 a {
-    background-color: #708090;
+    background-color: #586784;
     text-decoration: none;
     color: black;
-}
-div {
-    width: 12%;
-    background-color: #708090;
+    display: block;
     padding: .5%;
+    width: 12%;
+}
+
+
+#logout {
+    width: 6%;
 }

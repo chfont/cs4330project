@@ -25,9 +25,11 @@
 </form>
 </div>
 
-{% if errors is not None %}
-{% include 'error.html' %}
-{% endif %}
+<div id="errors">
+    {% if errors is not None %}
+    {% include 'error.html' %}
+    {% endif %}
+</div>
 
 </body>
 </html>

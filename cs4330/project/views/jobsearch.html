@@ -4,6 +4,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'CSS/jobsearch.css'%}"/>
+    <script src="{% static 'JS/jobsearch_apply.js'%}"></script>
 </head>
     <body>
         Job Search
@@ -12,7 +13,7 @@
         <br />
         <div id="jobs">
             {% for job in jobs %}
-            <div id="post">
+            <div id="post" onclick="goto_or_apply('{{job.0}}')">
                 Position: {{job.1}}
                 <br/>
                 Location: {{job.2}}
@@ -30,6 +31,12 @@
             <form method="POST" class="post-form" style="padding-left:2%">{% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit" class="save btn btn-default">Submit</button>
+            </form>
+        </div>
+
+        <div id="id_div">
+            <form method="POST" id="applyform">{% csrf_token %}
+                {{idform.as_p}}
             </form>
         </div>
     </body>

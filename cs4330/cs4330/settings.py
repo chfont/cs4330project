@@ -55,7 +55,7 @@ ROOT_URLCONF = 'cs4330.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['./project/views'],
+        'DIRS': [BASE_DIR + '/project/views'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
