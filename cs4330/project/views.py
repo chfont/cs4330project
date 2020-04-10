@@ -76,8 +76,8 @@ def profile(request):
         return redirect(login)   
     if request.method == 'POST':
         upload(request.FILES['resume'])
-    c.execute("SELECT * FROM users WHERE id = %s", (userDict['id'],))
-    user = c.fetchone()
+    cursor.execute("SELECT * FROM users WHERE id = %s", (userDict['id'],))
+    user = cursor.fetchone()
 
     # Store user name info
     userDict['firstname'] = user[2]
