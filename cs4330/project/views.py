@@ -46,7 +46,6 @@ def register(request):
                 if res is None:
                     error.append("Invalid employee id")
             if len(error):
-                print(error)
                 return render(request, 'register.html', {'form': form, 'errors':error})
 
             else:
@@ -86,9 +85,11 @@ def profile(request):
     employeeID = None
     if 'employeeID' in userDict:
         employeeID = userDict['employeeID']
-
+    recruiterID = None
+    if 'recruiterID' in userDict:
+        recruiterID = userDict['recruiterID']
     apps = getJobApplicationsOfUser(db_obj, userDict['id'])
-    return render(request, 'profile.html', {'user': user, 'employee': employeeID, 'apps': apps})
+    return render(request, 'profile.html', {'user': user, 'employee': employeeID, 'apps': apps, 'recruiter':recruiterID})
 
 
 # Function to handle job search page requests
@@ -232,3 +233,12 @@ def apply(request):
     form = SearchApplyForm()
     return render(request, 'apply.html', {'post':post, 'long_desc': long_desc, 'requirements': requirements, 'form':form, 'succeed':success, 'errors':err})
 
+
+def recruiter_post(request):
+    if 'id' not in userDict:
+        return redirect(login)
+    if 'recruiter_id' not in userDict:
+        redirect(profile)
+
+    job_posts = getJobPostsByRecruiter(db_obj, userDict['recruiterID'])
+    return render(request, 'recruiter_post.html', {'posts':job_posts})

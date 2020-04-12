@@ -10,7 +10,7 @@
         <div>
             <h3>Applications</h3>
             {% for app in apps %}
-            {{app.1}} {{app.2}} {{app.0}}
+            {{app.1}} {{app.2}} {{app.0}} <br />
             {% endfor %}
         </div>
         <a href="jobpost">Post a job (Recruiters only)</a>
@@ -20,6 +20,9 @@
         <a href="messages">View Messages</a>
         {% endif %}
         <br />
+        {% if recruiter is not None %}
+        <a href="view_posts">View Your Job Posts</a><br />
+        {% endif %}
         <a href="login" id="logout">Logout</a>
         <h2>Upload resume</h2>
         <form method="post" enctype="multipart/form-data">

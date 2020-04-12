@@ -1,0 +1,11 @@
+#posts {
+    overflow-y: scroll;
+    width: 30%;
+    float:left;
+}
+
+#post {
+    padding: 2%;
+    margin-bottom: 1%;
+    background-color: #586784;
+}

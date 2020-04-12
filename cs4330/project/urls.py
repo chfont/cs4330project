@@ -9,4 +9,5 @@ urlpatterns = [
 	path('jobpost', views.jobpost, name='jobpost'),
 	path('messages', views.messages, name='message'),
 	path('apply', views.apply, name='apply'),
+	path('view_posts', views.recruiter_post, name='view_posts'),
 ]

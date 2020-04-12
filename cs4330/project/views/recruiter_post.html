@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/recruiter_post.css'%}"/>
+</head>
+<body>
+<a href="home">Return to Profile</a><br />
+<h3>Your Job Posts:</h3>
+<div id="posts">
+    {% for post in posts %}
+        <div id="post">
+            <b>{{post.1}}</b><br/>
+            Location: {{post.2}}<br />
+            Company: {{post.4}} Pay Rate: {{post.5}}<br/>
+            {{post.9}} <br/>
+            Application Due Date: {{post.7}}
+        </div>
+    {% endfor %}
+</div>
+</body>
+</html>

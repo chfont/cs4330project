@@ -68,6 +68,10 @@ def getApplicationCountByUser(db_obj, user_id):
     return results[0]
 
 def addApplicationToTable(db_obj, app_id, job_id, user_id):
-    db_obj.cursor.execute("insert into applications(application_id, job_id, user_id) values(%s, %s, %s)", (app_id, job_id, user_id))
+    db_obj.cursor.execute("insert into applications(application_id, job_id, user_id, status) values(%s, %s, %s, %s)", (app_id, job_id, user_id, 'SUBMITTED'))
     db_obj.db.commit()
     return True
+
+def getJobPostsByRecruiter(db_obj, rec_id):
+    db_obj.cursor.execute("select * from jobpost where recruiter_id = %s", (rec_id,))
+    return db_obj.cursor.fetchall()
