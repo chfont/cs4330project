@@ -4,8 +4,8 @@ import MySQLdb as sql
 from datetime import date, datetime
 from .uniqueId import *
 from django.views.generic import TemplateView
-from .upload import *
 from .dbQuery import *
+from django.core.files.storage import FileSystemStorage
 
 db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
 cursor = db.cursor()
@@ -69,7 +69,10 @@ def profile(request):
     if 'id' not in userDict:
         return redirect(login)   
     if request.method == 'POST':
-        upload(request.FILES['resume'])
+        uploaded_file = request.FILES['resume']
+        fs = FileSystemStorage()
+        fs.save(uploaded_file.name, uploaded_file)
+
     user = getUserById(db_obj, userDict['id'])
 
     # Store user name info
