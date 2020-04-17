@@ -18,6 +18,7 @@
     {% endfor %}
 </div>
 <div id="newmessage">
+    <h3>New Message</h3>
 <form method="POST">
     {%csrf_token%}
     {{form.as_p}}

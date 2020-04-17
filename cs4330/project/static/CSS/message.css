@@ -6,5 +6,15 @@
 
 #newmessage {
     margin-left: 28%;
+     background-color: #3E4041;
+        padding: 1% 0% 1% 1%;
+        width: 30%;
+        box-shadow: 5px 5px 5px #4E4D51;
+        text-align: center;
+        border-radius: 25px;
+}
 
+#message {
+    padding: 2%;
+    background-color: #3E4041;
 }

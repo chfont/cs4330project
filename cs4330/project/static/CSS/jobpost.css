@@ -3,11 +3,19 @@ p {
 }
 
 form {
-    margin-left:30%;
-    width:40%;
     text-align: center;
 }
 
 div {
     text-align:left;
+}
+
+#form{
+    background-color: #3E4041;
+    padding: 1% 0% 1% 1%;
+    width: 30%;
+    margin-left: 35%;
+    box-shadow: 5px 5px 5px #4E4D51;
+    text-align: center;
+    border-radius: 25px;
 }
