@@ -55,3 +55,7 @@ class SearchApplyForm(forms.Form):
 
 class SkillForm(forms.Form):
     skill = forms.CharField(label="Skill", max_length=32)
+
+class ApplicationStatusForm(forms.Form):
+    app_id = forms.CharField(label="Application Id", max_length=32)
+    status = forms.CharField(label="Status", max_length=10)

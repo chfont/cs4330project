@@ -40,9 +40,9 @@
         </div>
         <div id="skills" class="column">
             {%for skill in skills %}
-                {{skill.0}}
+            <div id="skill">{{skill.0}}</div>
             {%endfor%}
-
+            <br/>
             <form method="post" id="skillform">
                 {%csrf_token%}
                 {{skillform}}

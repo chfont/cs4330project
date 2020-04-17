@@ -193,7 +193,7 @@ def messages(request):
                 err = ["Person not found, please try again"]
             else:
                 new_id = getUniqueId('messages', 'message_id', cursor, 32)
-                cursor.execute("INSERT INTO messages(message_id, sender_id, receiver_id, message, time) VALUES(%s, %s, %s, %s, %s)", (new_id, userDict['id'], res[0][0], form.cleaned_data['message'], datetime.now()))
+                cursor.execute("INSERT INTO messages(message_id, sender_id, receiver_id, message, time) VALUES(%s, %s, %s, %s, %s)", (new_id, userDict['id'], res[0][0], form.cleaned_data['message'], datetime.datetime.now()))
                 db.commit()
     form = NewMessageForm()
 
@@ -290,4 +290,17 @@ def view_apps(request):
         return redirect(login)
     if 'recruiterID' not in userDict:
         return redirect(profile)
-    return render(request, 'viewapp.html')
+
+    if request.method == 'POST':
+        form = ApplicationStatusForm(request.POST)
+        if form.is_valid():
+            updateApplication(db_obj, form.cleaned_data['app_id'], form.cleaned_data['status'])
+    applicants = getJobApplicants(db_obj, userDict['job_id'])
+
+    stitched = []
+    for applicant in applicants:
+        id = applicant[5]
+        skills = getSkillsOfUser(db_obj, id)
+        stitched.append([applicant, skills])
+    form = ApplicationStatusForm()
+    return render(request, 'viewapp.html', {'applicants': stitched, 'form': form})

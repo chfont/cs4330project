@@ -3,8 +3,31 @@
 {% load static %}
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/viewapp.css'%}"/>
+    <script src="{% static 'JS/viewapp.js'%}"></script>
 </head>
 <body>
-Placeholder
+<a href="home">Return to Profile</a>
+<div id="applicants">
+    {% for applicant in applicants %}
+    <div id="{{applicant.0.0}}" class="applicant">
+        Name: {{applicant.0.7}} {{applicant.0.8}}<br/>
+        Skills:<br/>
+        {%for skill in applicant.1 %}
+        {{skill.0}}
+        {%endfor%}
+        <br/>
+        <div id="accept" onclick="accept('{{applicant.0.0}}')">Accept</div>
+        <div id="reject" onclick="reject('{{applicant.0.0}}')">Reject</div>
+    </div>
+    {%endfor%}
+</div>
+
+<div id="id_div">
+    <form method="POST" id="applyform">{% csrf_token %}
+        {{form.as_p}}
+    </form>
+</div>
+
 </body>
 </html>

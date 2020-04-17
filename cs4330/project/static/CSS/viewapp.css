@@ -1,0 +1,30 @@
+#applicants {
+    overflow-y: scroll;
+    width: 20%;
+    float:left;
+}
+
+.applicant {
+    padding: 2%;
+    background-color: #3E4041;
+}
+
+#accept{
+background-color: #40895b;
+width:50%;
+float:left;
+text-align:center;
+padding: 2%;
+}
+
+#reject {
+    background-color: #D47D7D;
+    text-align:center;
+    padding: 2%;
+}
+
+a {float: right;}
+
+#id_div {
+display: none;
+}

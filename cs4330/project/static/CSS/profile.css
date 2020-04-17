@@ -33,7 +33,7 @@ a {
 }
 
 #skills {
-    width: 40
+    width: 30%;
 }
 
 #plus {
@@ -42,4 +42,15 @@ a {
 
 .header {
     border-bottom: 1% solid white;
+}
+
+#skill {
+float: left;
+padding: 1%;
+background-color: #3E4041;
+margin: .5%;
+}
+
+#skillform {
+    float:left;
 }

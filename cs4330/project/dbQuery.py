@@ -64,7 +64,7 @@ def isUniqueApplication(db_obj, user_id, job_id):
     return len(results) == 0
 
 def getApplicationCountByUser(db_obj, user_id):
-    db_obj.cursor.execute("select count(*) from applications where user_id = %s", (user_id,))
+    db_obj.cursor.execute("select count(*) from applications where user_id = %s and status = 'SUBMITTED'", (user_id,))
     results = db_obj.cursor.fetchone()
     return results[0]
 
@@ -124,3 +124,12 @@ def getJobStatistics(db_obj):
     db_obj.cursor.execute('''select count(*) from login''')
     userCount = db_obj.cursor.fetchall()
     return [jobApplicationsSent, jobpostsMade, postsByCompany, applicationsPerCompany, userCount]
+
+def getJobApplicants(db_obj, job_id):
+    db_obj.cursor.execute('''Select * from applications inner join (select * from users inner join (select count(*) as skill_ct, user_id from user_skills group by user_id) s on s.user_id = users.id) a on a.id = applications.user_id where job_id = %s
+    order by employee_id, skill_ct''', (job_id,))
+    return db_obj.cursor.fetchall()
+
+def updateApplication(db_obj, app_id, status):
+    db_obj.cursor.execute('''UPDATE applications set status = %s where application_id = %s''', (status, app_id))
+    db_obj.db.commit()
