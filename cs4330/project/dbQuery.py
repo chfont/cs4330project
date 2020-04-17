@@ -124,3 +124,7 @@ def getJobStatistics(db_obj):
     db_obj.cursor.execute('''select count(*) from login''')
     userCount = db_obj.cursor.fetchall()
     return [jobApplicationsSent, jobpostsMade, postsByCompany, applicationsPerCompany, userCount]
+
+def setUserResume(db_obj):
+    
+    db_obj.db.commit()

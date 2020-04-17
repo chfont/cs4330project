@@ -69,3 +69,10 @@ class Jobpost(models.Model):
     class Meta:
         managed = False
         db_table = 'jobpost'
+
+class Resume(models.Model):
+    filename = models.CharField(max_length=100)
+    doc = models.FileField(upload_to='resumes/docx/')
+
+    def _str_(self):
+        return self.filename

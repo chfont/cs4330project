@@ -6,6 +6,7 @@ from .uniqueId import *
 from django.views.generic import TemplateView
 from .dbQuery import *
 from django.core.files.storage import FileSystemStorage
+#import docx
 
 db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
 cursor = db.cursor()
@@ -113,6 +114,13 @@ def profile(request):
     form = SkillForm()
     skills = getSkillsOfUser(db_obj, userDict['id'])
     return render(request, 'profile.html', {'user': user, 'employee': employeeID, 'apps': apps, 'recruiter':recruiterID, 'skillform':form, 'skills':skills})
+
+def getText(filename):
+    doc = docx.Document(filename)
+    fullText = []
+    for para in doc.paragraphs:
+        fullText.append(para.text)
+    return '\n'.join(fullText)
 
 
 # Function to handle job search page requests
