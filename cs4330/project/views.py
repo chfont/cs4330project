@@ -5,11 +5,7 @@ from datetime import date, datetime
 from .uniqueId import *
 from django.views.generic import TemplateView
 from .dbQuery import *
-<<<<<<< HEAD
-from django.core.files import *
-=======
 from django.core.files.storage import FileSystemStorage
->>>>>>> ea9ec756ae939efecd951bd874ea24f81f9cfa14
 
 db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
 cursor = db.cursor()
