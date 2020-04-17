@@ -1,5 +1,4 @@
-
-#login {
+div {
     background-color: #3E4041;
     padding: 1% 0% 1% 1%;
     width: 30%;
@@ -9,12 +8,11 @@
     border-radius: 25px;
 }
 
-#formfields {
-    text-align: right;
-    margin-right: 30%;
-}
-
-
-button {
-    text-align: center;
+a {
+    background-color: #BFC1C2;
+    text-decoration: none;
+    color: black;
+    display: block;
+    padding: .5%;
+    width: 5%;
 }

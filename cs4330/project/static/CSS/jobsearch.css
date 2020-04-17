@@ -6,16 +6,26 @@
 
 #post {
     padding: 2%;
-    background-color: #586784;
+    background-color: #3E4041;
 }
 
 #formdiv {
-    padding-left:30%;
-    width:40%;
+    margin-left:30%;
+    width:20%;
+    background-color: #3E4041;
+    box-shadow: 5px 5px 5px #4E4D51;
+    border-radius: 25px;
+    padding: 1%;
+    text-align:center;
 }
 
 form {
     padding-left:2%;
+}
+
+#formfields {
+    text-align: right;
+        margin-right: 5%;
 }
 
 #id_div {
