@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>Admin Login</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/admin.css'%}"/>
+</head>
+<body>
+<div>
+    <h3>Statistics</h3>
+    User Count: {{users.0}} <br/><br/>
+    New Applications in last month:
+    {{appsTotal.0}} <br/><br/>
+    New Job Posts in last month:
+    {{postTotal.0}} <br /><br/>
+    New Applications per company: <br/>
+    {%for tup in companyApps %}
+    {{tup.0}} : {{tup.1}} <br />
+    {%endfor%}
+    <br />
+    New Posts per company:<br/>
+    {%for tup in companyPosts %}
+    {{tup.0}} : {{tup.1}} <br />
+    {%endfor%}
+</div>
+<a href="admin_login">Logout</a>
+</body>
+</html>

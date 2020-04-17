@@ -7,8 +7,6 @@
     <script src="{% static 'JS/jobsearch_apply.js'%}"></script>
 </head>
     <body>
-        Job Search
-        <br />
         <a href="home">Return to Profile</a>
         <br />
         <div id="jobs">
@@ -28,8 +26,11 @@
             {% endfor %}
         </div>
         <div id="formdiv">
+            <h3>Job Search</h3>
             <form method="POST" class="post-form" style="padding-left:2%">{% csrf_token %}
-                {{ form.as_p }}
+                <div id="formfields">
+                    {{ form.as_p }}
+                </div>
                 <button type="submit" class="save btn btn-default">Submit</button>
             </form>
         </div>

@@ -1,17 +1,45 @@
 
 a {
-    background-color: #586784;
+    background-color: #BFC1C2;
     text-decoration: none;
     color: black;
     display: block;
-    padding: .5%;
-    width: 12%;
+    padding: 2%;
+    width: 40%;
 }
 
 #logout {
-    width: 6%;
+    width: 10%;
 }
 
-div {
-    float: right;
+#applications {
+    margin-right: 40%;
+    background-color: #3E4041;
+    padding: 2.5%;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 5px 5px 5px #4E4D51;
+}
+
+.column {
+    float:left;
+}
+#columnA {
+    width: 30%;
+}
+
+#columnB {
+    width: 40%;
+}
+
+#skills {
+    width: 40
+}
+
+#plus {
+    padding: 1% 2%;
+}
+
+.header {
+    border-bottom: 1% solid white;
 }

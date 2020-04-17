@@ -7,14 +7,18 @@
     <link rel="stylesheet" type="text/css" href="{% static 'CSS/login.css'%}"/>
   </head>
   <body>
-    <h2>Login</h2>
-    <div id="loginform">
-        <form method="POST">{% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="save btn btn-default">Submit</button>
-        </form>
+    <div id="login">
+        <h2>Login</h2>
+        <div id="loginform">
+            <form method="POST">{% csrf_token %}
+                <div id="formfields">
+                    {{ form.as_p }}
+                </div>
+                <button type="submit" class="save btn btn-default">Submit</button>
+            </form>
+        </div>
+        <br/>
+        <a href="register">Sign Up</a>
     </div>
-
-    <a href="register">Sign Up</a>
   </body>
 </html>

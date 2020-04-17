@@ -29,6 +29,18 @@ def login(request):
     form = LoginForm()
     return render(request, 'login.html', {'form' : form})
 
+# Function to handle Admin Login page
+def adminLogin(request):
+    userDict.clear()
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = checkAdmin(db_obj, form.cleaned_data['email'], form.cleaned_data['password'])
+            if user is not None and len(user):
+                userDict['admin'] = 'admin'
+                return redirect(admin_home)
+    form = LoginForm()
+    return render(request, 'admin_login.html', {'form' : form})
 
 # Function to handle registration requests
 def register(request):
@@ -69,9 +81,15 @@ def profile(request):
     if 'id' not in userDict:
         return redirect(login)   
     if request.method == 'POST':
-        uploaded_file = request.FILES['resume']
-        fs = FileSystemStorage()
-        fs.save(uploaded_file.name, uploaded_file)
+        form = SkillForm(request.POST)
+        if form.is_valid():
+            if doesNotHaveSkill(db_obj, userDict['id'], form.cleaned_data['skill'].upper()):
+                addSkillToUser(db_obj, userDict['id'], form.cleaned_data['skill'].upper())
+        else:
+            if 'resume' in request.FILES:
+                uploaded_file = request.FILES['resume']
+                fs = FileSystemStorage()
+                fs.save(uploaded_file.name, uploaded_file)
 
     user = getUserById(db_obj, userDict['id'])
 
@@ -92,7 +110,9 @@ def profile(request):
     if 'recruiterID' in userDict:
         recruiterID = userDict['recruiterID']
     apps = getJobApplicationsOfUser(db_obj, userDict['id'])
-    return render(request, 'profile.html', {'user': user, 'employee': employeeID, 'apps': apps, 'recruiter':recruiterID})
+    form = SkillForm()
+    skills = getSkillsOfUser(db_obj, userDict['id'])
+    return render(request, 'profile.html', {'user': user, 'employee': employeeID, 'apps': apps, 'recruiter':recruiterID, 'skillform':form, 'skills':skills})
 
 
 # Function to handle job search page requests
@@ -245,3 +265,15 @@ def recruiter_post(request):
 
     job_posts = getJobPostsByRecruiter(db_obj, userDict['recruiterID'])
     return render(request, 'recruiter_post.html', {'posts':job_posts})
+
+
+def admin_home(request):
+    if 'admin' not in userDict:
+        return redirect(adminLogin)
+    stats = getJobStatistics(db_obj)
+    jobappsTotal = stats[0][0]
+    jobPostsTotal = stats[1][0]
+    postsPerCompany = stats[2]
+    appsPerCompany = stats[3]
+    users = stats[4][0]
+    return render(request, 'admin_home.html', {'appsTotal': jobappsTotal, 'postTotal': jobPostsTotal, 'companyPosts': postsPerCompany, 'companyApps':appsPerCompany, 'users':users})

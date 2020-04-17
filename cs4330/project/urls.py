@@ -13,6 +13,8 @@ urlpatterns = [
 	path('messages', views.messages, name='message'),
 	path('apply', views.apply, name='apply'),
 	path('view_posts', views.recruiter_post, name='view_posts'),
+	path('admin_login', views.adminLogin, name='admin_login'),
+	path('admin_home', views.admin_home, name='admin_home'),
 ]
 
 if settings.DEBUG:

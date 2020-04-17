@@ -1,3 +1,34 @@
 body {
-    background-color: #778899;
+    /*background-color: #778899;*/
+    background-color: #5D6062;
+    color: white;
+}
+
+button {
+  background-color: #949497; /* Green */
+  border: none;
+  color: white;
+  padding: .5%   1%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+input {
+background-color: #BFC1C2;
+color: black;
+border: none;
+border-radius: 25px;
+}
+
+textarea {
+background-color: #BFC1C2;
+color: black;
+border: none;
+border-radius: 25px;
+}
+
+a {
+    color: white;
+    text-decoration: underline;
 }

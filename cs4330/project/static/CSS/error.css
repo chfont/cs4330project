@@ -1,7 +1,8 @@
 #errors{
-    background-color: #294459;
-    color: white;
+    background-color: #3E4041;
+    color: #D47D7D;
     text-align:center;
     width: 15%;
     border-radius: 25px;
+    box-shadow: 5px 5px 5px #4E4D51;
 }

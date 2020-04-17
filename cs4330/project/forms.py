@@ -3,13 +3,9 @@ from django import forms
 from .models import *
 
 
-class LoginForm(forms.ModelForm):
-    class Meta:
-        model = Login
-        fields = ('email', 'password',)
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
+class LoginForm(forms.Form):
+    email = forms.CharField(label="Login/Email", max_length=64)
+    password = forms.CharField(label="Password",max_length=128, widget=forms.PasswordInput)
 
 
 class RegisterForm(forms.Form):
@@ -56,3 +52,6 @@ class NewMessageForm(forms.Form):
 #Hidden form to be used internally by javascript for the job search page
 class SearchApplyForm(forms.Form):
     job_id = forms.CharField(label="Job Id", max_length=64)
+
+class SkillForm(forms.Form):
+    skill = forms.CharField(label="Skill", max_length=32)

@@ -1,4 +1,5 @@
 # Database queries are here, to remove clutter from views
+import datetime
 
 class DBObject:
     def __init__(self, db, cursor):
@@ -68,10 +69,58 @@ def getApplicationCountByUser(db_obj, user_id):
     return results[0]
 
 def addApplicationToTable(db_obj, app_id, job_id, user_id):
-    db_obj.cursor.execute("insert into applications(application_id, job_id, user_id, status) values(%s, %s, %s, %s)", (app_id, job_id, user_id, 'SUBMITTED'))
+    db_obj.cursor.execute("insert into applications(application_id, job_id, user_id, status, submission_time) values(%s, %s, %s, %s, %s)", (app_id, job_id, user_id, 'SUBMITTED', datetime.datetime.now()))
     db_obj.db.commit()
     return True
 
 def getJobPostsByRecruiter(db_obj, rec_id):
     db_obj.cursor.execute("select * from jobpost where recruiter_id = %s", (rec_id,))
     return db_obj.cursor.fetchall()
+
+def doesNotHaveSkill(db_obj, user_id, skill):
+    db_obj.cursor.execute("select * from user_skills where user_id = %s and skill = %s", (user_id, skill))
+    res = db_obj.cursor.fetchall()
+    return len(res) == 0
+
+def addSkillToUser(db_obj, user_id, skill):
+    db_obj.cursor.execute("insert into user_skills(user_id, skill) values(%s, %s)", (user_id, skill))
+    db_obj.db.commit()
+
+def getSkillsOfUser(db_obj, user_id):
+    db_obj.cursor.execute("select skill from user_skills where user_id = %s",(user_id,) )
+    return db_obj.cursor.fetchall()
+
+def checkAdmin(db_obj, username, password):
+    db_obj.cursor.execute("select * from admin_login where id = %s and password = %s",(username, password))
+    return db_obj.cursor.fetchone()
+
+
+def getJobStatistics(db_obj):
+    date = datetime.datetime.now()
+    if date.month == 1:
+        date = date.replace(year=date.year-1)
+        date=date.replace(month=12)
+    else:
+        date=date.replace(month=date.month - 1)
+    db_obj.cursor.execute("select count(*) from applications where submission_time > %s",(date,))
+    jobApplicationsSent = db_obj.cursor.fetchall()
+    db_obj.cursor.execute("select count(*) from jobpost where post_date > %s", (date,))
+    jobpostsMade = db_obj.cursor.fetchall()
+
+    db_obj.cursor.execute('''Select companies.company_name, 
+    ifnull(a.count_jobs,0) from companies 
+    left join (select jobpost.company_name, count(*) as count_jobs from jobpost where post_date>%s group by jobpost.company_name) a on a.company_name= companies.company_name''', (date,))
+    postsByCompany = db_obj.cursor.fetchall()
+
+    db_obj.cursor.execute('''
+    select companies.company_name, ifnull(a.count,0) from companies
+    left join (
+        select company_name, count(*) as count from jobpost, applications where jobpost.job_id = applications.job_id and applications.submission_time
+        > %s group by company_name    
+    ) a on a.company_name = companies.company_name
+    ''', (date,))
+    applicationsPerCompany = db_obj.cursor.fetchall()
+
+    db_obj.cursor.execute('''select count(*) from login''')
+    userCount = db_obj.cursor.fetchall()
+    return [jobApplicationsSent, jobpostsMade, postsByCompany, applicationsPerCompany, userCount]
