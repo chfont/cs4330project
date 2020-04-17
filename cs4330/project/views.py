@@ -260,11 +260,18 @@ def apply(request):
 def recruiter_post(request):
     if 'id' not in userDict:
         return redirect(login)
-    if 'recruiter_id' not in userDict:
-        redirect(profile)
+    if 'recruiterID' not in userDict:
+        return redirect(profile)
+    if request.method == 'POST':
+        form = SearchApplyForm(request.POST)
+        if form.is_valid():
+            userDict['job_id'] = form.cleaned_data['job_id']
+            return redirect(view_apps)
 
+
+    idform = SearchApplyForm()
     job_posts = getJobPostsByRecruiter(db_obj, userDict['recruiterID'])
-    return render(request, 'recruiter_post.html', {'posts':job_posts})
+    return render(request, 'recruiter_post.html', {'posts':job_posts, 'idform':idform})
 
 
 def admin_home(request):
@@ -277,3 +284,10 @@ def admin_home(request):
     appsPerCompany = stats[3]
     users = stats[4][0]
     return render(request, 'admin_home.html', {'appsTotal': jobappsTotal, 'postTotal': jobPostsTotal, 'companyPosts': postsPerCompany, 'companyApps':appsPerCompany, 'users':users})
+
+def view_apps(request):
+    if 'id' not in userDict:
+        return redirect(login)
+    if 'recruiterID' not in userDict:
+        return redirect(profile)
+    return render(request, 'viewapp.html')

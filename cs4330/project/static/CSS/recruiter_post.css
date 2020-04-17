@@ -9,3 +9,7 @@
     margin-bottom: 1%;
     background-color: #3E4041;
 }
+
+#id_div {
+    display: none;
+}

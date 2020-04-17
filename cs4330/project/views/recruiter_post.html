@@ -4,13 +4,14 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'CSS/base.css'%}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'CSS/recruiter_post.css'%}"/>
+    <script src="{% static 'JS/jobsearch_apply.js'%}"></script>
 </head>
 <body>
 <a href="home">Return to Profile</a><br />
 <h3>Your Job Posts:</h3>
 <div id="posts">
     {% for post in posts %}
-        <div id="post">
+        <div id="post" onclick="goto_or_apply('{{post.0}}')">
             <b>{{post.1}}</b><br/>
             Location: {{post.2}}<br />
             Company: {{post.4}} Pay Rate: {{post.5}}<br/>
@@ -19,5 +20,13 @@
         </div>
     {% endfor %}
 </div>
+
+<div id="id_div">
+    <form method="POST" id="applyform">{% csrf_token %}
+        {{idform.as_p}}
+    </form>
+</div>
+
+</form>
 </body>
 </html>

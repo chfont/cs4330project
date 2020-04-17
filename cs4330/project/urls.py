@@ -15,6 +15,7 @@ urlpatterns = [
 	path('view_posts', views.recruiter_post, name='view_posts'),
 	path('admin_login', views.adminLogin, name='admin_login'),
 	path('admin_home', views.admin_home, name='admin_home'),
+	path('viewapp', views.view_apps, name='viewapp'),
 ]
 
 if settings.DEBUG:
