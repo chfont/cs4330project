@@ -4,9 +4,12 @@ import MySQLdb as sql
 from datetime import date, datetime
 from .uniqueId import *
 from django.views.generic import TemplateView
-from .upload import *
 from .dbQuery import *
+<<<<<<< HEAD
 from django.core.files import *
+=======
+from django.core.files.storage import FileSystemStorage
+>>>>>>> ea9ec756ae939efecd951bd874ea24f81f9cfa14
 
 db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
 cursor = db.cursor()
@@ -85,11 +88,12 @@ def profile(request):
         form = SkillForm(request.POST)
         if form.is_valid():
             if doesNotHaveSkill(db_obj, userDict['id'], form.cleaned_data['skill'].upper()):
-                print("YO")
                 addSkillToUser(db_obj, userDict['id'], form.cleaned_data['skill'].upper())
         else:
             if 'resume' in request.FILES:
-                upload(request.FILES['resume'])
+                uploaded_file = request.FILES['resume']
+                fs = FileSystemStorage()
+                fs.save(uploaded_file.name, uploaded_file)
 
     user = getUserById(db_obj, userDict['id'])
 
