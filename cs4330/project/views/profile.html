@@ -19,11 +19,15 @@
             <a href="view_posts">View Your Job Posts</a><br />
             {% endif %}
             <a href="login" id="logout">Logout</a>
+
+
             <h2>Upload resume</h2>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <input type="file" name="resume">
+                <input type="file" name="resume" accept="application/pdf">
                 <button type="submit">Upload file</button>
+
+                
             </form>
         </div>
         <div id="columnB" class="column">

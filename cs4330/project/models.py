@@ -1,4 +1,5 @@
 from django.db import models
+from .validators import validate_file_extension
 
 class Login(models.Model):
     email = models.CharField(max_length=64, blank=True, null=True)
