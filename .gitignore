@@ -2,4 +2,4 @@
 *.pyc
 env/
 .vscode/settings.json
-cs4330/media/
+media/

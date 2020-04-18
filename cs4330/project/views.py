@@ -88,8 +88,9 @@ def profile(request):
         else:
             if 'resume' in request.FILES:
                 uploaded_file = request.FILES['resume']
+                file_name = userDict['id'] + 'resume.pdf'
                 fs = FileSystemStorage()
-                fs.save(uploaded_file.name, uploaded_file)
+                fs.save(file_name, uploaded_file)
 
     user = getUserById(db_obj, userDict['id'])
 
