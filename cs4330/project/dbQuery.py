@@ -126,7 +126,7 @@ def getJobStatistics(db_obj):
     return [jobApplicationsSent, jobpostsMade, postsByCompany, applicationsPerCompany, userCount]
 
 def getJobApplicants(db_obj, job_id):
-    db_obj.cursor.execute('''Select * from applications inner join (select * from users inner join (select count(*) as skill_ct, user_id from user_skills group by user_id) s on s.user_id = users.id) a on a.id = applications.user_id where job_id = %s
+    db_obj.cursor.execute('''Select *, ifnull(a.skill_ct,0) from applications left join (select *, ifnull(s.skill_ct,0) from users left join (select count(*) as skill_ct, user_id from user_skills group by user_id) s on s.user_id = users.id) a on a.id = applications.user_id where job_id = %s
     order by employee_id, skill_ct''', (job_id,))
     return db_obj.cursor.fetchall()
 
