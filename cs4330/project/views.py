@@ -93,7 +93,13 @@ def profile(request):
     employeeID = None
     if 'employeeID' in userDict:
         employeeID = userDict['employeeID']
-    return render(request, 'profile.html', {'user':user, 'employee': employeeID})
+    recruiterID = None
+    if 'recruiterID' in userDict:
+        recruiterID = userDict['recruiterID']
+    apps = getJobApplicationsOfUser(db_obj, userDict['id'])
+    form = SkillForm()
+    skills = getSkillsOfUser(db_obj, userDict['id'])
+    return render(request, 'profile.html', {'user': user, 'employee': employeeID, 'apps': apps, 'recruiter':recruiterID, 'skillform':form, 'skills':skills})
 
 
 # Function to handle job search page requests
