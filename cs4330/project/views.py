@@ -6,6 +6,7 @@ from .uniqueId import *
 from django.views.generic import TemplateView
 from .dbQuery import *
 from django.core.files.storage import FileSystemStorage
+import os
 
 db = sql.connect(user="django4330", passwd="qd0bQues0",db="cs4330")
 cursor = db.cursor()
@@ -79,7 +80,7 @@ def register(request):
 # Function to handle profile page requests
 def profile(request):
     if 'id' not in userDict:
-        return redirect(login)   
+        return redirect(login)
     if request.method == 'POST':
         form = SkillForm(request.POST)
         if form.is_valid():
@@ -89,6 +90,9 @@ def profile(request):
             if 'resume' in request.FILES:
                 uploaded_file = request.FILES['resume']
                 file_name = userDict['id'] + 'resume.pdf'
+                file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'media') + file_name
+                #try os.unlink(file_path)
+                print(file_path)
                 fs = FileSystemStorage()
                 fs.save(file_name, uploaded_file)
 
@@ -299,9 +303,12 @@ def view_apps(request):
     applicants = getJobApplicants(db_obj, userDict['job_id'])
 
     stitched = []
+    resArr = []
     for applicant in applicants:
         id = applicant[5]
         skills = getSkillsOfUser(db_obj, id)
-        stitched.append([applicant, skills])
+        file_path = 'http://127.0.0.1:8000/media/'
+        resume = file_path + id + 'resume.pdf'
+        stitched.append([applicant, skills, resume])
     form = ApplicationStatusForm()
     return render(request, 'viewapp.html', {'applicants': stitched, 'form': form})

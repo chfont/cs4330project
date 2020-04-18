@@ -12,6 +12,7 @@
     {% for applicant in applicants %}
     <div id="{{applicant.0.0}}" class="applicant">
         Name: {{applicant.0.7}} {{applicant.0.8}}<br/>
+        <a href={{applicant.2}}>Resume</a><br/>
         Skills:<br/>
         {%for skill in applicant.1 %}
         {{skill.0}}
