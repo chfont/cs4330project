@@ -139,7 +139,7 @@ def jobsearch(request):
             if form.cleaned_data['location'] != '':
                 str.append(f"location like '%{form.cleaned_data['location']}%'")
             if form.cleaned_data['position'] != '':
-                str.append(f"position like '%{form.cleaned_data['position']}%'")
+                str.append(f"job_name like '%{form.cleaned_data['position']}%'")
             if form.cleaned_data['description'] != '':
                 str.append(f"description like '%{form.cleaned_data['description']}%'")
             if len(str) > 0:
@@ -205,39 +205,28 @@ def messages(request):
     # get received messages
     cursor.execute("SELECT sender_id, time, message FROM messages WHERE receiver_id = %s ORDER BY time desc", (userDict['id'],))
     receivers = cursor.fetchall()
-    cursor.execute("SELECT receiver_id, time, message FROM messages WHERE sender_id = %s ORDER BY time desc", (userDict['id'],))
-    senders = cursor.fetchall()
-    rec_ids = [x[0] for x in receivers]
     receivers = [x for x in receivers]
-    senders = [x for x in senders if x[0] not in rec_ids]
-    res = receivers + senders
-    rec_names = None
 
     # Map user names to user ids
-    for result in res:
-        cursor.execute("select fName, lName from users where id = %s", (result[0],))
+    rec_names = None
+    for receiver in receivers:
+        cursor.execute("select fName, lName from users where id = %s", (receiver[0],))
         n = cursor.fetchone()
         print(n[0])
-        print(result[1])
+        print(receiver[1])
 
         if rec_names is None:
-            rec_names = [(n[0], n[1], result[1], result[2])]
+            rec_names = [(n[0], n[1], receiver[1],  receiver[2])]
         else:
-            rec_names += [(n[0], n[1], result[1], result[2])]
+            rec_names += [(n[0], n[1],  receiver[1],  receiver[2])]
 
     # get sent messages
     cursor.execute("SELECT receiver_id, time, message FROM messages WHERE sender_id = %s ORDER BY time desc", (userDict['id'],))
     receivers = cursor.fetchall()
-    cursor.execute("SELECT sender_id, time, message FROM messages WHERE receiver_id = %s ORDER BY time desc", (userDict['id'],))
-    senders = cursor.fetchall()
-    rec_ids = [x[0] for x in receivers]
     receivers = [x for x in receivers]
-    senders = [x for x in senders if x[0] not in rec_ids]
-    res = receivers + senders
     sent_names = None
 
-    
-    for result in res:
+    for result in  receivers:
         cursor.execute("select fName, lName from users where id = %s", (result[0],))
         n = cursor.fetchone()
         print(n[0])
@@ -247,8 +236,9 @@ def messages(request):
             sent_names = [(n[0], n[1], result[1], result[2])]
         else:
             sent_names += [(n[0], n[1], result[1], result[2])]
-    return render(request, 'message.html', {'messages': res, 'rec_names':rec_names, 'sent_names':sent_names,'form': form, 'errors':err, 'length': len(res)})
+    return render(request, 'message.html', { 'rec_names':rec_names, 'sent_names':sent_names,'form': form, 'errors':err})
 
+# Function to handle user applications to a specific job
 def apply(request):
     if 'id' not in userDict:
         return redirect(login)
@@ -284,7 +274,7 @@ def apply(request):
     form = SearchApplyForm()
     return render(request, 'apply.html', {'post':post, 'long_desc': long_desc, 'requirements': requirements, 'form':form, 'succeed':success, 'errors':err})
 
-
+# Function to allow recruiters to view their posted jobs
 def recruiter_post(request):
     if 'id' not in userDict:
         return redirect(login)
@@ -301,7 +291,7 @@ def recruiter_post(request):
     job_posts = getJobPostsByRecruiter(db_obj, userDict['recruiterID'])
     return render(request, 'recruiter_post.html', {'posts':job_posts, 'idform':idform})
 
-
+# Function to handle administrative statistics generation and viewing
 def admin_home(request):
     if 'admin' not in userDict:
         return redirect(adminLogin)
@@ -313,6 +303,7 @@ def admin_home(request):
     users = stats[4][0]
     return render(request, 'admin_home.html', {'appsTotal': jobappsTotal, 'postTotal': jobPostsTotal, 'companyPosts': postsPerCompany, 'companyApps':appsPerCompany, 'users':users})
 
+# Function to allow recruiters to view applications for a specific job post
 def view_apps(request):
     if 'id' not in userDict:
         return redirect(login)
