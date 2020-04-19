@@ -22,3 +22,8 @@
 a {
     float: right;
 }
+
+#errors{
+width: 15%;
+margin-left: 40%;
+}

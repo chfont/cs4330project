@@ -8,8 +8,10 @@
     <body>
         <div id="columnA" class="column">
             <p>{{user.2}} {{user.3}}'s Profile</p>
+            {% if recruiter is not None %}
             <a href="jobpost">Post a job (Recruiters only)</a>
             <br />
+            {% endif %}
             <a href="jobsearch">Search for job</a><br />
             {% if employee is not None %}
             <a href="messages">View Messages</a>
@@ -43,6 +45,7 @@
             <div id="skill">{{skill.0}}</div>
             {%endfor%}
             <br/>
+            <br />
             <form method="post" id="skillform">
                 {%csrf_token%}
                 {{skillform}}

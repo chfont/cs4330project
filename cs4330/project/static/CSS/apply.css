@@ -21,3 +21,7 @@ button{
     padding: 1% 0% 1% 1%;
     box-shadow: 5px 5px 5px #4E4D51;
 }
+
+#errors{
+    width: 15%;
+}
