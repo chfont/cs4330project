@@ -90,10 +90,10 @@ def profile(request):
             if 'resume' in request.FILES:
                 uploaded_file = request.FILES['resume']
                 file_name = userDict['id'] + 'resume.pdf'
-                file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'media') + file_name
-                #try os.unlink(file_path)
-                print(file_path)
+                file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'media\\') + file_name
                 fs = FileSystemStorage()
+                if fs.exists(file_path):
+                    fs.delete(file_path)
                 fs.save(file_name, uploaded_file)
 
     user = getUserById(db_obj, userDict['id'])
@@ -202,16 +202,16 @@ def messages(request):
                 db.commit()
     form = NewMessageForm()
 
-    # get all conversations, and the other individual's name
-    cursor.execute("SELECT receiver_id, time, message FROM messages WHERE sender_id = %s", (userDict['id'],))
+    # get received messages
+    cursor.execute("SELECT sender_id, time, message FROM messages WHERE receiver_id = %s ORDER BY time desc", (userDict['id'],))
     receivers = cursor.fetchall()
-    cursor.execute("SELECT sender_id, time, message FROM messages WHERE receiver_id = %s", (userDict['id'],))
+    cursor.execute("SELECT receiver_id, time, message FROM messages WHERE sender_id = %s ORDER BY time desc", (userDict['id'],))
     senders = cursor.fetchall()
     rec_ids = [x[0] for x in receivers]
     receivers = [x for x in receivers]
     senders = [x for x in senders if x[0] not in rec_ids]
     res = receivers + senders
-    names = None
+    rec_names = None
 
     # Map user names to user ids
     for result in res:
@@ -220,11 +220,34 @@ def messages(request):
         print(n[0])
         print(result[1])
 
-        if names is None:
-            names = [(n[0], n[1], result[1], result[2])]
+        if rec_names is None:
+            rec_names = [(n[0], n[1], result[1], result[2])]
         else:
-            names += [(n[0], n[1], result[1], result[2])]
-    return render(request, 'message.html', {'messages': res, 'names':names,'form': form, 'errors':err, 'length': len(res)})
+            rec_names += [(n[0], n[1], result[1], result[2])]
+
+    # get sent messages
+    cursor.execute("SELECT receiver_id, time, message FROM messages WHERE sender_id = %s ORDER BY time desc", (userDict['id'],))
+    receivers = cursor.fetchall()
+    cursor.execute("SELECT sender_id, time, message FROM messages WHERE receiver_id = %s ORDER BY time desc", (userDict['id'],))
+    senders = cursor.fetchall()
+    rec_ids = [x[0] for x in receivers]
+    receivers = [x for x in receivers]
+    senders = [x for x in senders if x[0] not in rec_ids]
+    res = receivers + senders
+    sent_names = None
+
+    
+    for result in res:
+        cursor.execute("select fName, lName from users where id = %s", (result[0],))
+        n = cursor.fetchone()
+        print(n[0])
+        print(result[1])
+
+        if sent_names is None:
+            sent_names = [(n[0], n[1], result[1], result[2])]
+        else:
+            sent_names += [(n[0], n[1], result[1], result[2])]
+    return render(request, 'message.html', {'messages': res, 'rec_names':rec_names, 'sent_names':sent_names,'form': form, 'errors':err, 'length': len(res)})
 
 def apply(request):
     if 'id' not in userDict:

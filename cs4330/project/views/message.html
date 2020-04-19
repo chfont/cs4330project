@@ -9,14 +9,17 @@
 </head>
 
 <body>
+<a href="home">Return to Profile</a>
+<h3>Received Messages</h3>
 <div id ="messages">
-    {% for n in names %}
+    {% for n in rec_names %}
 
     <div id = "message">
         {{n.0}}  {{n.1}} {{ n.2|date:"D d M Y" }} {{n.3}}
     </div>
     {% endfor %}
 </div>
+
 <div id="newmessage">
     <h3>New Message</h3>
 <form method="POST">
@@ -25,12 +28,20 @@
     <button>Send Message</button>
 </form>
 </div>
+<h3>Sent Messages</h3>
+<div id ="messages">
+    {% for n in sent_names %}
+    <div id = "message">
+        {{n.0}}  {{n.1}} {{ n.2|date:"D d M Y" }} {{n.3}}
+    </div>
+    {% endfor %}
+</div>
 
 <div id="errors">
     {% if errors is not None %}
     {% include 'error.html' %}
     {% endif %}
 </div>
-<a href="home">Return to Profile</a>
+
 </body>
 </html>
